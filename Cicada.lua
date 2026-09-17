@@ -1,174 +1,168 @@
 -- ============================================================
--- MENU SCRIPT DELTA ROBLOX - TÊN: KP (ĐỨNG YÊN KICK NẰM SẤP)
+-- SCRIPT LAG KICK + DESTROY GRAB LINE (5000 BẢN/GIÂY)
 -- ============================================================
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
-local RunService = game:GetService("RunService")
-local UserInputService = game:GetService("UserInputService")
 local LocalPlayer = Players.LocalPlayer
 local Camera = Workspace.CurrentCamera
 
-local CORRECT_PASSWORD = "CLANKP123"
+local repo = "https://raw.githubusercontent.com/deividcomsono/Obsidian/main/"
+local Library = loadstring(game:HttpGet(repo .. "Library.lua"))()
+local ThemeManager = loadstring(game:HttpGet(repo .. "addons/ThemeManager.lua"))()
+local SaveManager = loadstring(game:HttpGet(repo .. "addons/SaveManager.lua"))()
 
--- ============================================================
--- HỆ THỐNG XÁC THỰC MẬT KHẨU
--- ============================================================
-local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "KP_Login_Gui"
-ScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
-ScreenGui.ResetOnSpawn = false
+local Options = Library.Options
+Library.ForceCheckbox = false
 
-local MainFrame = Instance.new("Frame")
-MainFrame.Size = UDim2.new(0, 320, 0, 180)
-MainFrame.Position = UDim2.new(0.5, -160, 0.5, -90)
-MainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-MainFrame.BorderSizePixel = 0
-MainFrame.Parent = ScreenGui
+local Window = Library:CreateWindow({
+    Title = "Lag Kick Hub",
+    Footer = "Delta Executor",
+    NotifySide = "Right",
+    ShowCustomCursor = true,
+})
 
-local UICorner = Instance.new("UICorner")
-UICorner.CornerRadius = UDim.new(0, 8)
-UICorner.Parent = MainFrame
+local Tabs = {
+    Main = Window:AddTab("Lag Kick", "clock"),
+    ["UI Settings"] = Window:AddTab("UI Cài Đặt", "settings")
+}
 
-local Title = Instance.new("TextLabel")
-Title.Size = UDim2.new(1, 0, 0, 40)
-Title.BackgroundTransparency = 1
-Title.Text = "KP HUB - NHẬP MẬT KHẨU"
-Title.TextColor3 = Color3.fromRGB(255, 255, 255)
-Title.TextSize = 16
-Title.Font = Enum.Font.SourceSansBold
-Title.Parent = MainFrame
-
-local TextBox = Instance.new("TextBox")
-TextBox.Size = UDim2.new(0.85, 0, 0, 40)
-TextBox.Position = UDim2.new(0.075, 0, 0.35, 0)
-TextBox.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
-TextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-TextBox.PlaceholderText = "Nhập mật khẩu tại đây..."
-TextBox.Text = ""
-TextBox.TextSize = 14
-TextBox.Font = Enum.Font.SourceSans
-TextBox.Parent = MainFrame
-
-local BoxCorner = Instance.new("UICorner")
-BoxCorner.CornerRadius = UDim.new(0, 6)
-BoxCorner.Parent = TextBox
-
-local SubmitBtn = Instance.new("TextButton")
-SubmitBtn.Size = UDim2.new(0.85, 0, 0, 35)
-SubmitBtn.Position = UDim2.new(0.075, 0, 0.68, 0)
-SubmitBtn.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
-SubmitBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-SubmitBtn.Text = "XÁC NHẬN"
-SubmitBtn.TextSize = 14
-SubmitBtn.Font = Enum.Font.SourceSansBold
-SubmitBtn.Parent = MainFrame
-
-local BtnCorner = Instance.new("UICorner")
-BtnCorner.CornerRadius = UDim.new(0, 6)
-BtnCorner.Parent = SubmitBtn
-
-local ErrorLabel = Instance.new("TextLabel")
-ErrorLabel.Size = UDim2.new(1, 0, 0, 20)
-ErrorLabel.Position = UDim2.new(0, 0, 0.88, 0)
-ErrorLabel.BackgroundTransparency = 1
-ErrorLabel.TextColor3 = Color3.fromRGB(255, 60, 60)
-ErrorLabel.TextSize = 12
-ErrorLabel.Font = Enum.Font.SourceSans
-ErrorLabel.Text = ""
-ErrorLabel.Parent = MainFrame
-
--- Hàm hiển thị màn hình M-M-ACLAN_KP và % loading
-local function ShowBossIntro(onComplete)
-    MainFrame:Destroy()
-
-    local BossGui = Instance.new("ScreenGui")
-    BossGui.Name = "KP_Boss_Intro"
-    BossGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
-    BossGui.ResetOnSpawn = false
-
-    local BossFrame = Instance.new("Frame")
-    BossFrame.Size = UDim2.new(1, 0, 1, 0)
-    BossFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
-    BossFrame.BackgroundTransparency = 0.2
-    BossFrame.Parent = BossGui
-
-    local BossText = Instance.new("TextLabel")
-    BossText.Size = UDim2.new(1, 0, 0, 60)
-    BossText.Position = UDim2.new(0, 0, 0.38, -30)
-    BossText.BackgroundTransparency = 1
-    BossText.Text = "M-M-ACLAN_KP"
-    BossText.TextColor3 = Color3.fromRGB(255, 50, 50)
-    BossText.TextSize = 28
-    BossText.Font = Enum.Font.SourceSansBold
-    BossText.Parent = BossFrame
-
-    local PercentText = Instance.new("TextLabel")
-    PercentText.Size = UDim2.new(1, 0, 0, 40)
-    PercentText.Position = UDim2.new(0, 0, 0.48, 0)
-    PercentText.BackgroundTransparency = 1
-    PercentText.Text = "Đang tải: 0%"
-    PercentText.TextColor3 = Color3.fromRGB(255, 255, 255)
-    PercentText.TextSize = 20
-    PercentText.Font = Enum.Font.SourceSansBold
-    PercentText.Parent = BossFrame
-
-    task.spawn(function()
-        local currentPercent = 1
-        while currentPercent < 100 do
-            local jump = math.random(1, 10)
-            currentPercent = currentPercent + jump
-            if currentPercent > 100 then
-                currentPercent = 100
-            end
-            
-            PercentText.Text = "Đang tải: " .. currentPercent .. "%"
-            task.wait(0.04)
-        end
-
-        PercentText.Text = "Đã tải xong!"
-        task.wait(0.6)
-
-        BossGui:Destroy()
-        if onComplete then
-            onComplete()
-        end
-    end)
+local function notify(title, content, duration)
+    Library:Notify({ Title = title or "Thông báo", Description = content or "", Time = duration or 5 })
 end
 
-SubmitBtn.MouseButton1Click:Connect(function()
-    if TextBox.Text == CORRECT_PASSWORD then
-        ShowBossIntro(function()
-            LoadMainScript()
-        end)
-    else
-        ErrorLabel.Text = "Sai mật khẩu! Vui lòng thử lại."
+local GE = ReplicatedStorage:WaitForChild("GrabEvents", 10)
+local SetNetOwner = GE and GE:WaitForChild("SetNetworkOwner", 5)
+local DestroyLine = GE and GE:WaitForChild("DestroyGrabLine", 5)
+local CreateLine = GE and GE:WaitForChild("CreateGrabLine", 5)
+
+local function SetOwner(part)
+    if part then pcall(function() SetNetOwner:FireServer(part, part.CFrame) end) end
+end
+
+-- ============================================================
+-- CỐ ĐỊNH GÓC NHÌN THỨ BA
+-- ============================================================
+local function SetThirdPerson()
+    LocalPlayer.CameraMode = Enum.CameraMode.Classic
+    Camera.CameraType = Enum.CameraType.Custom
+    Camera.CameraSubject = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid")
+    LocalPlayer.CameraMaxZoomDistance = 50
+    LocalPlayer.CameraMinZoomDistance = 0.5
+end
+
+local function ResetCamera()
+    LocalPlayer.CameraMode = Enum.CameraMode.LockFirstPerson
+    Camera.CameraType = Enum.CameraType.Custom
+    LocalPlayer.CameraMaxZoomDistance = 0
+    LocalPlayer.CameraMinZoomDistance = 0
+end
+
+-- ============================================================
+-- CHỨC NĂNG LAG KICK + DESTROY GRAB LINE (5000 BẢN/GIÂY)
+-- ============================================================
+local MainGroup = Tabs.Main:AddLeftGroupbox("Điều Khiển Chính")
+
+local lineLagEnabled = false
+local lineLagThread = nil
+local lagRunning = false
+
+local LAG_RADIUS = 12
+local LAG_HEIGHT = 8
+
+-- Toggle Góc nhìn thứ ba
+MainGroup:AddToggle("ThirdPersonToggle", {
+    Text = "📹 Góc Nhìn Thứ Ba",
+    Default = false,
+    Callback = function(v)
+        if v then
+            SetThirdPerson()
+            notify("Góc nhìn", "Đã bật góc nhìn thứ ba", 1)
+        else
+            ResetCamera()
+            notify("Góc nhìn", "Đã tắt", 1)
+        end
     end
-end)
+})
 
--- Hàm chạy menu chính
-function LoadMainScript()
-    local repo = "https://raw.githubusercontent.com/deividcomsono/Obsidian/main/"
-    local Library = loadstring(game:HttpGet(repo .. "Library.lua"))()
-    local ThemeManager = loadstring(game:HttpGet(repo .. "addons/ThemeManager.lua"))()
-    local SaveManager = loadstring(game:HttpGet(repo .. "addons/SaveManager.lua"))()
+MainGroup:AddLabel("━━━━━━━━━━━━━━━━━━━━━━━━━━━")
 
-    local Options = Library.Options
-    Library.ForceCheckbox = false
+local function StartLineLag()
+    if lineLagEnabled then return end
+    lineLagEnabled = true
+    lineLagThread = coroutine.create(function()
+        local cl = CreateLine
+        if not cl then return end
+        while lineLagEnabled do
+            local spawn = Workspace:FindFirstChild("SpawnLocation") or Workspace:FindFirstChild("Spawn")
+            if spawn then
+                local rx = math.random(-1e9, 1e9)
+                local rz = math.random(-1e9, 1e9)
+                local directions = {
+                    CFrame.new(rx, 0, rz),
+                    CFrame.new(-rx, 0, -rz),
+                    CFrame.new(rx, 0, -rz),
+                    CFrame.new(-rx, 0, rz)
+                }
+                for _, pos in pairs(directions) do
+                    cl:FireServer(spawn, pos)
+                end
+            end
+            task.wait(0.0008)  -- 5000 bản/giây
+        end
+    end)
+    coroutine.resume(lineLagThread)
+end
 
-    local Window = Library:CreateWindow({
-        Title = "KP Hub - FTAP & Lag & ESP",
-        Footer = "Delta Executor",
-        NotifySide = "Right",
-        ShowCustomCursor = true,
-    })
+local function StopLineLag()
+    lineLagEnabled = false
+    if lineLagThread then coroutine.close(lineLagThread); lineLagThread = nil end
+end
 
-    local Tabs = {
-        Main = Window:AddTab("Chức Năng", "clock"),
-        ThrowTab = Window:AddTab("Ném Người Chơi", "user-plus"),
-        FlingTab = Window:AddTab("Super Fling", "zap"),
-        XocuTab = Window:AddTab("Server Xocu", "globe"),
-        KickV2Tab = Window:AddTab("Kick V2", "alert-triangle"),
-        ProtectTab = Window:AddTab("Bảo Vệ", "shield"),
-        Extr
+MainGroup:AddButton({
+    Text = "🚀 Lagg Kick + All Destroy (5000 bản/s)",
+    Func = function()
+        if lagRunning then return end
+        lagRunning = true
+        task.spawn(function()
+            StartLineLag()
+            task.wait(1)
+
+            local players = {}
+            for _, p in pairs(Players:GetPlayers()) do
+                if p ~= LocalPlayer and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
+                    table.insert(players, p.Character.HumanoidRootPart)
+                end
+            end
+
+            if #players == 0 then
+                StopLineLag()
+                lagRunning = false
+                notify("Lag Kick", "Không tìm thấy người chơi nào khác trên server", 2)
+                return
+            end
+
+            local myRoot = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+            if not myRoot then StopLineLag(); lagRunning = false return end
+
+            for _, hrp in pairs(players) do
+                myRoot.CFrame = hrp.CFrame * CFrame.new(0, 5, 5)
+                task.wait(0.2)
+                SetOwner(hrp)
+                task.wait()
+            end
+
+            local angleStep = (math.pi * 2) / #players
+            for idx, hrp in pairs(players) do
+                local angle = (idx - 1) * angleStep
+                local x = math.cos(angle) * LAG_RADIUS
+                local z = math.sin(angle) * LAG_RADIUS
+                pcall(function()
+                    hrp.CFrame = CFrame.new(x, LAG_HEIGHT, z)
+                    hrp.AssemblyLinearVelocity = Vector3.zero
+                end)
+                local bp = Instance.new("BodyPosition")
+                bp.MaxForce = Vector3.new(1e9, 1e9, 1e9)
+                bp.P = 40000000
+                bp.Position = Vector3.new(x, LAG_HE
