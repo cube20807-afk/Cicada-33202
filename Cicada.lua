@@ -1,170 +1,157 @@
--- ============================================================
--- MENU SCRIPT DELTA ROBLOX - TÊN: KP (VÀO THẲNG SAU KHI ĐÚNG MK)
--- ============================================================
-
+-- [[ KAIDEPTRAIHUB FLING & SMART AIM V3 - CYBER GLOW ]] --
+local UserInputService = game:GetService("UserInputService")
 local Players = game:GetService("Players")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local Workspace = game:GetService("Workspace")
 local RunService = game:GetService("RunService")
+local Workspace = game:GetService("Workspace")
 local LocalPlayer = Players.LocalPlayer
 local Camera = Workspace.CurrentCamera
 
-local CORRECT_PASSWORD = "CLANKP123"
-
--- ============================================================
--- HỆ THỐNG XÁC THỰC MẬT KHẨU
--- ============================================================
-local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "KP_Login_Gui"
-ScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
+-- Khởi tạo Giao diện Premium
+local ScreenGui = Instance.new("ScreenGui", LocalPlayer:WaitForChild("PlayerGui"))
+ScreenGui.Name = "Kaideptraihub_V3"
 ScreenGui.ResetOnSpawn = false
 
-local MainFrame = Instance.new("Frame")
-MainFrame.Size = UDim2.new(0, 320, 0, 180)
-MainFrame.Position = UDim2.new(0.5, -160, 0.5, -90)
-MainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-MainFrame.BorderSizePixel = 0
-MainFrame.Parent = ScreenGui
+-- Khung Menu Chính (Thiết kế Semi-Transparent cực đẹp)
+local MainMenu = Instance.new("Frame", ScreenGui)
+MainMenu.Size = UDim2.new(0, 240, 0, 230)
+MainMenu.Position = UDim2.new(0.5, -120, 0.3, 0)
+MainMenu.BackgroundColor3 = Color3.fromRGB(10, 10, 16)
+MainMenu.BackgroundTransparency = 0.2
+MainMenu.BorderSizePixel = 0
+local MainCorner = Instance.new("UICorner", MainMenu)
+MainCorner.CornerRadius = UDim.new(0, 14)
 
-local UICorner = Instance.new("UICorner")
-UICorner.CornerRadius = UDim.new(0, 8)
-UICorner.Parent = MainFrame
+-- Hiệu ứng Viền Phát Sáng Neon (Cyber Glow)
+local UIStroke = Instance.new("UIStroke", MainMenu)
+UIStroke.Color = Color3.fromRGB(0, 255, 204)
+UIStroke.Thickness = 1.5
+UIStroke.Transparency = 0.3
 
-local Title = Instance.new("TextLabel")
-Title.Size = UDim2.new(1, 0, 0, 40)
-Title.BackgroundTransparency = 1
-Title.Text = "KP HUB - NHẬP MẬT KHẨU"
-Title.TextColor3 = Color3.fromRGB(255, 255, 255)
-Title.TextSize = 16
-Title.Font = Enum.Font.SourceSansBold
-Title.Parent = MainFrame
+-- Thanh Viền Đỉnh Menu mượt mà
+local NeonLine = Instance.new("Frame", MainMenu)
+NeonLine.Size = UDim2.new(1, 0, 0, 4)
+NeonLine.BackgroundColor3 = Color3.fromRGB(0, 255, 204)
+NeonLine.BorderSizePixel = 0
+Instance.new("UICorner", NeonLine).CornerRadius = UDim.new(0, 14)
 
-local TextBox = Instance.new("TextBox")
-TextBox.Size = UDim2.new(0.85, 0, 0, 40)
-TextBox.Position = UDim2.new(0.075, 0, 0.35, 0)
-TextBox.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
-TextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-TextBox.PlaceholderText = "Nhập mật khẩu tại đây..."
-TextBox.Text = ""
-TextBox.TextSize = 14
-TextBox.Font = Enum.Font.SourceSans
-TextBox.Parent = MainFrame
+-- Tiêu đề Menu (Chạm để Ẩn/Hiện chuyên nghiệp)
+local TitleButton = Instance.new("TextButton", MainMenu)
+TitleButton.Size = UDim2.new(1, 0, 0, 42)
+TitleButton.Position = UDim2.new(0, 0, 0, 4)
+TitleButton.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
+TitleButton.BackgroundTransparency = 0.4
+TitleButton.Text = "   ⚡ KAIDEPTRAIHUB V3"
+TitleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+TitleButton.Font = Enum.Font.GothamBold
+TitleButton.TextSize = 13
+TitleButton.TextXAlignment = Enum.TextXAlignment.Left
+local TitleCorner = Instance.new("UICorner", TitleButton)
+TitleCorner.CornerRadius = UDim.new(0, 12)
 
-local BoxCorner = Instance.new("UICorner")
-BoxCorner.CornerRadius = UDim.new(0, 6)
-BoxCorner.Parent = TextBox
+-- Trạng thái thu gọn nhỏ ở góc màn hình
+local StatusLabel = Instance.new("TextLabel", TitleButton)
+StatusLabel.Size = UDim2.new(0, 60, 1, 0)
+StatusLabel.Position = UDim2.new(1, -70, 0, 0)
+StatusLabel.BackgroundTransparency = 1
+StatusLabel.Text = "[ CHẠM ẨN ]"
+StatusLabel.TextColor3 = Color3.fromRGB(0, 255, 204)
+StatusLabel.Font = Enum.Font.GothamBold
+StatusLabel.TextSize = 10
+StatusLabel.TextXAlignment = Enum.TextXAlignment.Right
 
-local SubmitBtn = Instance.new("TextButton")
-SubmitBtn.Size = UDim2.new(0.85, 0, 0, 35)
-SubmitBtn.Position = UDim2.new(0.075, 0, 0.68, 0)
-SubmitBtn.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
-SubmitBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-SubmitBtn.Text = "XÁC NHẬN"
-SubmitBtn.TextSize = 14
-SubmitBtn.Font = Enum.Font.SourceSansBold
-SubmitBtn.Parent = MainFrame
+-- Thùng chứa các nút tính năng
+local ContentFrame = Instance.new("Frame", MainMenu)
+ContentFrame.Size = UDim2.new(1, 0, 1, -46)
+ContentFrame.Position = UDim2.new(0, 0, 0, 46)
+ContentFrame.BackgroundTransparency = 1
+ContentFrame.BorderSizePixel = 0
 
-local BtnCorner = Instance.new("UICorner")
-BtnCorner.CornerRadius = UDim.new(0, 6)
-BtnCorner.Parent = SubmitBtn
+-- Cấu hình hệ thống mặc định
+local FlingEnabled = true
+local FlingPower = 2000 
+local AimEnabled = false
+local AimRadius = 110  -- Bo hẹp vòng nhắm để tăng độ chính xác
+local Smoothness = 0.035 -- Siêu nhẹ, bám tâm vô cùng tự nhiên không rung lắc
+local MenuCollapsed = false
 
-local ErrorLabel = Instance.new("TextLabel")
-ErrorLabel.Size = UDim2.new(1, 0, 0, 20)
-ErrorLabel.Position = UDim2.new(0, 0, 0.88, 0)
-ErrorLabel.BackgroundTransparency = 1
-ErrorLabel.TextColor3 = Color3.fromRGB(255, 60, 60)
-ErrorLabel.TextSize = 12
-ErrorLabel.Font = Enum.Font.SourceSans
-ErrorLabel.Text = ""
-ErrorLabel.Parent = MainFrame
+-- Hiệu ứng Tween Thu nhỏ / Mở rộng mượt mà cho Mobile
+TitleButton.MouseButton1Click:Connect(function()
+    MenuCollapsed = not MenuCollapsed
+    if MenuCollapsed then
+        MainMenu:TweenSize(UDim2.new(0, 240, 0, 46), "Out", "Quint", 0.3, true)
+        ContentFrame.Visible = false
+        StatusLabel.Text = "[ HIỆN ]"
+        UIStroke.Color = Color3.fromRGB(255, 0, 128) -- Đổi sang màu hồng hồng khi ẩn
+    else
+        MainMenu:TweenSize(UDim2.new(0, 240, 0, 230), "Out", "Quint", 0.3, true)
+        ContentFrame.Visible = true
+        StatusLabel.Text = "[ CHẠM ẨN ]"
+        UIStroke.Color = Color3.fromRGB(0, 255, 204)
+    end
+end)
 
--- Hàm hiển thị màn hình Boss M-M-ACLAN_KP rồi load thẳng vào menu
-local function ShowBossIntro(onComplete)
-    MainFrame:Destroy()
-
-    local BossGui = Instance.new("ScreenGui")
-    BossGui.Name = "KP_Boss_Intro"
-    BossGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
-    BossGui.ResetOnSpawn = false
-
-    local BossFrame = Instance.new("Frame")
-    BossFrame.Size = UDim2.new(1, 0, 1, 0)
-    BossFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
-    BossFrame.BackgroundTransparency = 1
-    BossFrame.Parent = BossGui
-
-    local BossText = Instance.new("TextLabel")
-    BossText.Size = UDim2.new(1, 0, 0, 100)
-    BossText.Position = UDim2.new(0, 0, 0.4, -50)
-    BossText.BackgroundTransparency = 1
-    BossText.Text = "M-M-ACLAN_KP"
-    BossText.TextColor3 = Color3.fromRGB(255, 50, 50)
-    BossText.TextSize = 0
-    BossText.Font = Enum.Font.SourceSansBold
-    BossText.TextTransparency = 1
-    BossText.Parent = BossFrame
-
-    task.spawn(function()
-        for i = 1, 20 do
-            BossText.TextSize = i * 2.5
-            BossText.TextTransparency = 1 - (i / 20)
-            task.wait(0.02)
-        end
-
-        task.wait(1.5)
-
-        for i = 1, 15 do
-            BossText.TextTransparency = i / 15
-            task.wait(0.02)
-        end
-
-        BossGui:Destroy()
-        if onComplete then
-            onComplete()
-        end
-    end)
+-- Hàm tạo Nút bấm Cao cấp (Bo góc, chuyển màu mượt)
+local function CreateButton(name, text, pos, color)
+    local btn = Instance.new("TextButton", ContentFrame)
+    btn.Name = name
+    btn.Size = UDim2.new(0.9, 0, 0, 40)
+    btn.Position = pos
+    btn.BackgroundColor3 = color
+    btn.BackgroundTransparency = 0.15
+    btn.Text = text
+    btn.TextColor3 = Color3.new(1, 1, 1)
+    btn.Font = Enum.Font.GothamBold
+    btn.TextSize = 12
+    Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 10)
+    
+    -- Thêm viền nhẹ cho từng nút bấm trông sang xịn mịn hơn
+    local stroke = Instance.new("UIStroke", btn)
+    stroke.Color = Color3.new(1, 1, 1)
+    stroke.Thickness = 1
+    stroke.Transparency = 0.8
+    
+    return btn
 end
 
--- Hàm chạy menu chính
-local function LoadMainScript()
-    local repo = "https://raw.githubusercontent.com/deividcomsono/Obsidian/main/"
-    local Library = loadstring(game:HttpGet(repo .. "Library.lua"))()
-    local ThemeManager = loadstring(game:HttpGet(repo .. "addons/ThemeManager.lua"))()
-    local SaveManager = loadstring(game:HttpGet(repo .. "addons/SaveManager.lua"))()
+-- 1. NÚT FLING
+local FlingBtn = CreateButton("FlingBtn", "🟢 FLING MÚC ĐỒ: ON", UDim2.new(0.05, 0, 0, 12), Color3.fromRGB(10, 35, 25))
+FlingBtn.UIStroke.Color = Color3.fromRGB(0, 255, 150)
+FlingBtn.UIStroke.Transparency = 0.5
 
-    local Options = Library.Options
-    Library.ForceCheckbox = false
-
-    local Window = Library:CreateWindow({
-        Title = "KP Hub - FTAP & Lag & ESP",
-        Footer = "Delta Executor",
-        NotifySide = "Right",
-        ShowCustomCursor = true,
-    })
-
-    local Tabs = {
-        Main = Window:AddTab("Chức Năng", "clock"),
-        ThrowTab = Window:AddTab("Ném Người Chơi", "user-plus"),
-        FlingTab = Window:AddTab("Super Fling", "zap"),
-        XocuTab = Window:AddTab("Server Xocu", "globe"),
-        KickV2Tab = Window:AddTab("Kick V2", "alert-triangle"), -- Thêm khu vực Kick V2 mới
-        ProtectTab = Window:AddTab("Bảo Vệ", "shield"),
-        Extra2 = Window:AddTab("Tùy Chỉnh Khác", "sliders"),
-        ["UI Settings"] = Window:AddTab("Cài Đặt UI", "settings")
-    }
-
-    local function notify(title, content, duration)
-        Library:Notify({ Title = title or "Thông báo", Description = content or "", Time = duration or 5 })
+FlingBtn.MouseButton1Click:Connect(function()
+    FlingEnabled = not FlingEnabled
+    if FlingEnabled then
+        FlingBtn.Text = "🟢 FLING MÚC ĐỒ: ON"
+        FlingBtn.BackgroundColor3 = Color3.fromRGB(10, 35, 25)
+        FlingBtn.UIStroke.Color = Color3.fromRGB(0, 255, 150)
+    else
+        FlingBtn.Text = "🔴 FLING MÚC ĐỒ: OFF"
+        FlingBtn.BackgroundColor3 = Color3.fromRGB(40, 15, 20)
+        FlingBtn.UIStroke.Color = Color3.fromRGB(255, 50, 80)
     end
+end)
 
-    local GE = ReplicatedStorage:WaitForChild("GrabEvents", 10)
-    local SetNetOwner = GE and GE:WaitForChild("SetNetworkOwner", 5)
-    local DestroyLine = GE and GE:WaitForChild("DestroyGrabLine", 5)
-    local CreateLine = GE and GE:WaitForChild("CreateGrabLine", 5)
+-- 2. Ô NHẬP SỨC MẠNH (POWER TEXTBOX)
+local PowerInput = Instance.new("TextBox", ContentFrame)
+PowerInput.Size = UDim2.new(0.9, 0, 0, 38)
+PowerInput.Position = UDim2.new(0.05, 0, 0, 64)
+PowerInput.BackgroundColor3 = Color3.fromRGB(20, 20, 32)
+PowerInput.BackgroundTransparency = 0.3
+PowerInput.Text = "SỨC NÉM: " .. tostring(FlingPower)
+PowerInput.TextColor3 = Color3.fromRGB(0, 255, 204)
+PowerInput.Font = Enum.Font.GothamBold
+PowerInput.TextSize = 12
+Instance.new("UICorner", PowerInput).CornerRadius = UDim.new(0, 10)
 
-    local function SetOwner(part)
-        if part then pcall(function() SetNetOwner:FireServer(part, part.CFrame) end) end
-    end
+local InputStroke = Instance.new("UIStroke", PowerInput)
+InputStroke.Color = Color3.fromRGB(0, 255, 204)
+InputStroke.Thickness = 1
+InputStroke.Transparency = 0.7
 
-    local function SetThirdPerson()
-        LocalPlayer.CameraMode = Enum.CameraMode.Cla
+PowerInput.FocusLost:Connect(function()
+    local val = PowerInput.Text:gsub("SỨC NÉM: ", "")
+    local num = tonumber(val)
+    if num then FlingPower = num else PowerInput.Text = "SỨC NÉM: " .. tostring(FlingPower) end
+end)
+
+-- 3. NÚT SMART AIMBOT (SIÊU NHẸ)
